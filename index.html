@@ -348,7 +348,7 @@ const VIEWS = {
     const pend=S.skripsi.filter(s=>s.status==="menunggu");
     return `<section class="panel"><h2>Persetujuan Pendaftaran Skripsi</h2>
     <p>Periksa judul dan syarat akademik mahasiswa sebelum menyetujui.</p>
-    ${pend.length?`<div class="tbl"><table><thead><tr><th>Mahasiswa</th><th>Judul & Bidang</th><th>IPK / SKS</th><th>Aksi</th></tr></thead><tbody>
+    ${pend.length?`<div class="tbl"><table><thead><tr><th>Mahasiswa</th><th>Judul & Konsentrasi</th><th>IPK / SKS</th><th>Aksi</th></tr></thead><tbody>
     ${pend.map(s=>{const m=U(s.mhsId);return `<tr><td><strong>${esc(m.nama)}</strong><div class="mono">${m.nim}</div></td>
       <td>${esc(s.judul)}<div class="note">${esc(s.bidang)} · diajukan ${s.tgl}</div></td>
       <td class="mono">${s.ipk} / ${s.sks}</td>
@@ -382,7 +382,7 @@ const VIEWS = {
       ${s?`<p style="color:var(--bad)">Pendaftaran sebelumnya ditolak Admin. Silakan perbaiki dan ajukan ulang.</p>`:`<p>Anda belum terdaftar sebagai mahasiswa skripsi. Lengkapi formulir berikut.</p>`}
       <form id="fSkripsi">
         <label>Judul usulan<textarea id="sj" rows="2" required></textarea></label>
-        <div class="grid2"><label>Bidang kajian<select id="sb"><option>Sistem Informasi</option><option>Rekayasa Perangkat Lunak</option><option>Kecerdasan Buatan</option><option>Jaringan Komputer</option></select></label>
+        <div class="grid2"><label>Konsentrasi<select id="sb">${["Elektronika","Sistem Tenaga","Teknik Kendali","Telekomunikasi","Robotika","Lainnya"].map(x=>`<option>${x}</option>`).join("")}</select></label>
         <label>IPK<input id="si" required inputmode="decimal" placeholder="3.25"></label>
         <label>SKS lulus<input id="ss" required inputmode="numeric" placeholder="130"></label></div>
         <button class="btn pri">Ajukan Pendaftaran</button>
@@ -586,7 +586,7 @@ async function unduhPendaftar(pid){
   const dsn=(s,r)=>{const t=s.tim.find(t=>t.peran===r);return t?U(t.dosenId).nama:""};
   const ST={menunggu:"Menunggu",disetujui:"Disetujui",ditolak:"Ditolak"};
   const aoa=[[`Pendaftar Skripsi Tahun Akademik ${p.ta} Semester ${p.sem}`],[`Periode ${tglID(p.buka)} s.d. ${tglID(p.tutup)}`],[],
-    ["No","Nama","NIM","Judul","Bidang","IPK","SKS","Tanggal Daftar","Status Pendaftaran","Tahap Pelaksanaan","Status Skripsi","Pembimbing","Penguji 1","Penguji 2"],
+    ["No","Nama","NIM","Judul","Konsentrasi","IPK","SKS","Tanggal Daftar","Status Pendaftaran","Tahap Pelaksanaan","Status Skripsi","Pembimbing","Penguji 1","Penguji 2"],
     ...rows.map((s,i)=>{const m=U(s.mhsId);return [i+1,m.nama,String(m.nim),s.judul,s.bidang,Number(s.ipk)||s.ipk,Number(s.sks)||s.sks,s.tgl,ST[s.status]||s.status,s.status==="disetujui"?TAHAP[tahapOf(s)]:"-",s.status!=="disetujui"?"-":tahapOf(s)===SELESAI?"Selesai":"Belum selesai",dsn(s,"Pembimbing"),dsn(s,"Penguji 1"),dsn(s,"Penguji 2")]})];
   const ws=XLSX.utils.aoa_to_sheet(aoa);
   for(let r=4;r<aoa.length;r++){const c=ws[XLSX.utils.encode_cell({r,c:2})];if(c){c.t="s";c.z="@"}}
