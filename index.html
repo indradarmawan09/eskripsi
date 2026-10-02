@@ -511,7 +511,7 @@ const STP={dibuka:["p-ok","Dibuka"],terjadwal:["p-n","Terjadwal"],berakhir:["p-b
 function periodeView(){
   const y=new Date().getFullYear(), t=isoToday(), pj=periodeJalan();
   const jmlDaftar=p=>S.skripsi.filter(x=>x.periodeId===p.id).length;
-  const taOpt=[y-1,y,y+1].map(x=>`${x}/${x+1}`);
+  const y0=new Date().getMonth()>=6?y:y-1, taOpt=[0,1,2,3,4,5].map(i=>`${y0-i}/${y0-i+1}`); // tahun akademik berjalan (berganti tiap Juli) dan 5 tahun ke belakang
   return `<section class="panel"><div class="row" style="justify-content:space-between"><h2>Periode Pendaftaran</h2><span class="note">Hari ini: <strong>${tglID(t)}</strong></span></div>
     <p>Satu periode berlaku untuk pendaftaran skripsi, seminar proposal, dan sidang akhir. Selama periode berjalan, tiap akses bisa ditutup atau dibuka sendiri-sendiri.</p>
     ${pj?`<div class="panel" style="background:var(--surface)"><div class="row" style="justify-content:space-between"><h3>Periode berjalan: ${pj.ta} Semester ${pj.sem}</h3><span class="note">${tglID(pj.buka)} s.d. ${tglID(pj.tutup)}</span></div>
@@ -521,7 +521,7 @@ function periodeView(){
     <form id="fPeriode" class="panel" style="background:var(--bg)">
       <h3>Tambah Periode</h3>
       <div class="grid2">
-        <label>Tahun akademik<select id="pd_ta">${taOpt.map(o=>`<option ${o===`${y}/${y+1}`?"selected":""}>${o}</option>`).join("")}</select></label>
+        <label>Tahun akademik<select id="pd_ta">${taOpt.map(o=>`<option ${o===taOpt[0]?"selected":""}>${o}</option>`).join("")}</select></label>
         <label>Semester<select id="pd_sem"><option>Ganjil</option><option>Genap</option></select></label>
         <label>Tanggal dibuka<input id="pd_buka" type="date" required></label>
         <label>Tanggal ditutup<input id="pd_tutup" type="date" required></label>
